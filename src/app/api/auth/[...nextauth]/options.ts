@@ -64,7 +64,14 @@ export const Authoptions: NextAuthOptions={
             }
             return session
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user,account }) {
+            if(account?.provider == 'google'){
+                token.id=user.id.toString()
+                token.email=user.email.toString()
+                token.username=user.email.split('@')[0]
+                token.password=user.password
+                return token
+            }
             if(user){
                 token.id=user.id.toString()
                 token.email=user.email.toString()

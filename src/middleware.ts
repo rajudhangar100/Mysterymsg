@@ -18,7 +18,7 @@ export async function middleware(request: NextRequest) {
     //     return NextResponse.redirect(new URL('/', request.url));
     // }
 
-        // If the user is authenticated and trying to access auth pages, redirect to dashboard
+    // If the user is authenticated and trying to access auth pages, redirect to dashboard
     if (token) {
         if (url.pathname === '/sign-in' || url.pathname === '/sign-up' || url.pathname === '/verify') {
             return NextResponse.redirect(new URL('/dashboard', request.url));

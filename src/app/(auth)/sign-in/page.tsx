@@ -125,7 +125,7 @@ const Page = () => {
           <Link href='/sign-up' className='text-blue-500 hover:text-blue-800 cursor-pointer'>Sign up</Link>
         </p>
        </div>
-       <div className='my-3'>
+       <div className='my-3 mx-auto'>
         <ButtonGoogle/>
        </div>
       </div>
