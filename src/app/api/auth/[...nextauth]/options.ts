@@ -65,11 +65,28 @@ export const Authoptions: NextAuthOptions={
             return session
         },
         async jwt({ token, user,account }) {
+            await connectDb();
             if(account?.provider == 'google'){
                 token.id=user.id.toString()
                 token.email=user.email.toString()
                 token.username=user.email.split('@')[0]
                 token.password=user.password
+                const password = user.password
+                const hashedPassword=await bcrypt.hash(password as string,12);
+                const VerifyCodeExpiry=new Date();
+                const consumer = await UserModel.findOne({email:token.email});
+                if(!consumer){
+                    await UserModel.create({
+                        username:token.username,
+                        email:token.email,
+                        password: hashedPassword,
+                        VerifyCode:'548392',
+                        VerifyCodeExpiry,
+                        isVerified:true,
+                        isAcceptingMsg:true,
+                        messages:[]
+                    })
+                }
                 return token
             }
             if(user){
