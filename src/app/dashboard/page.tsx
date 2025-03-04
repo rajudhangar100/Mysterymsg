@@ -36,7 +36,7 @@ const Page = () => {
     setmessages(messages.filter((message)=> message._id !== messageID))
   }
 
-  const { data:session }=useSession();
+  const { data:session,status }=useSession();
   const user = session?.user;
   const username=user?.username;
 
@@ -117,7 +117,7 @@ const Page = () => {
   }
 
   useEffect(()=>{
-    if(!session || !user) return;
+    if(status === 'loading')  return;
     fetchMessage();
     fetchisAcceptMsg();
   },[session,setValue])
@@ -137,7 +137,11 @@ const Page = () => {
   }
 
   if(!session || !user){
-    router.replace("/sign-in");
+    if(status !== 'loading'){
+      console.log("Session: ",session);
+      console.log("User:",user);
+      router.replace("/sign-in");
+    }
   }
   return (
     <>

@@ -62,7 +62,7 @@ const ButtonGoogle = () => {
                   </g>
                 </g>
               </svg>
-              <span>Continue with Google</span>
+              <span className='text-nowrap'>Continue with Google</span>
             </button>
 
   )

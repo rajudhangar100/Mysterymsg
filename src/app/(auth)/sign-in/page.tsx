@@ -7,17 +7,18 @@ import { signinSchema } from '@/schema/signinSchema';
 import { Apiresponse } from '@/types/apiresponse';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import ButtonGoogle from '@/components/Button';
 
 
 const Page = () => {
-  const [ issubmiting,setissubmiting ] =useState(false);
+  const [ issubmiting,setissubmiting ] = useState(false);
+  const {data: session,status } = useSession();
   const router=useRouter();//used to redirect to another page
   const {toast}=useToast();//used to send notification
   //used to verify data, given in the form , here username and password;
@@ -71,6 +72,13 @@ const Page = () => {
     //     variant:'destructive'
     //   })
   }
+
+  useEffect(()=>{
+    if(status === 'loading')  return;
+    if(session?.user){
+      router.replace("/dashboard");
+    }
+  },[session,router])
   
   return (
     <>
@@ -125,7 +133,7 @@ const Page = () => {
           <Link href='/sign-up' className='text-blue-500 hover:text-blue-800 cursor-pointer'>Sign up</Link>
         </p>
        </div>
-       <div className='my-3 mx-auto'>
+       <div className='my-3 mx-16'>
         <ButtonGoogle/>
        </div>
       </div>
