@@ -15,11 +15,11 @@ export async function POST(req:Request){
             message:"User not Authenticated"
         },{ status:401 })
     }
-    const id = user?.id;
+    const email = user?.email;
     await connectDb();
     const { isAcceptingMsg }=await req.json();
     try {
-        const updatedUser = await UserModel.findByIdAndUpdate(id,{isAcceptingMsg},{new:true});
+        const updatedUser = await UserModel.findOneAndUpdate({email},{isAcceptingMsg},{new:true});
         if(!updatedUser){
             return Response.json({
                 success:false,
@@ -49,10 +49,10 @@ export async function GET(req:Request){
             message:"User not Authenticated"
         },{ status:400 })
     }
-    const userId=user.id;
+    const email=user.email;
     await connectDb();
     try{
-        const foundUser=await UserModel.findById(userId);
+        const foundUser=await UserModel.findOne({email});
         if(!foundUser){
             return Response.json({
                 success:false,

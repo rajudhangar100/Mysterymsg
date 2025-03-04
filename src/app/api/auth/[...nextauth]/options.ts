@@ -65,35 +65,44 @@ export const Authoptions: NextAuthOptions={
             return session
         },
         async jwt({ token, user,account }) {
+            let hashedPassword
             await connectDb();
-            if(account?.provider == 'google'){
-                token.id=user.id.toString()
-                token.email=user.email.toString()
-                token.username=user.email.split('@')[0]
-                token.password=user.password
-                const password = user.password
-                const hashedPassword=await bcrypt.hash(password as string,12);
-                const VerifyCodeExpiry=new Date();
-                const consumer = await UserModel.findOne({email:token.email});
-                if(!consumer){
-                    await UserModel.create({
-                        username:token.username,
-                        email:token.email,
-                        password: hashedPassword,
-                        VerifyCode:'548392',
-                        VerifyCodeExpiry,
-                        isVerified:true,
-                        isAcceptingMsg:true,
-                        messages:[]
-                    })
-                }
-                return token
-            }
             if(user){
                 token.id=user.id.toString()
                 token.email=user.email.toString()
-                token.username=user.username
                 token.password=user.password
+                if(account?.provider == 'google'){
+                    token.username=user.email.split('@')[0]
+                }else{
+                    token.username=user.username
+                }
+                try{
+                    if(account?.provider === 'google'){
+                        const password = user.password;
+                        if(!password?.length){
+                            hashedPassword='password'
+                        }else{
+                            hashedPassword=await bcrypt.hash(password as string,12);
+                        }
+                        const VerifyCodeExpiry=new Date();
+                        const consumer = await UserModel.findOne({email:token.email});
+                        if(!consumer){
+                            await UserModel.create({
+                                username:token.username,
+                                email:token.email,
+                                password: hashedPassword,
+                                VerifyCode:'548392',
+                                VerifyCodeExpiry,
+                                isVerified:true,
+                                isAcceptingMsg:true,
+                                messages:[]
+                            })
+                        }
+                    }
+                }catch(error){
+                    console.error("Error from callback signIn(): ",error);
+                    throw new Error("Error from catch of adding user into db")
+                }
             }
             return token
         }

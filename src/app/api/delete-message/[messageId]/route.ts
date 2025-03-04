@@ -17,7 +17,7 @@ export const DELETE=async (req:Request,{params}:{params:{messageId:string}})=>{
     }
     await connectDb();
     try{
-        const updatedUser=await UserModel.updateOne({_id:user.id},{$pull:{messages:{_id:msgID}}})
+        const updatedUser=await UserModel.updateOne({email: user.email},{$pull:{messages:{_id:msgID}}})
         if(updatedUser.modifiedCount==0){
             return Response.json({
                 success:false,

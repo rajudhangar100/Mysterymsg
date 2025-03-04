@@ -10,6 +10,7 @@ const connection: connectionObject={}
 
 async function connectDb():Promise<void>{
     const uri = process.env.MONGODB_URI || 'mongodb+srv://dhangarraju2005:databasepassword@cluster0.n44o3.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+    // const uri = 'mongodb://localhost:27017/mysterymsg'
     if(connection.isConnected){
         console.log("Database is already Connected");
         return
